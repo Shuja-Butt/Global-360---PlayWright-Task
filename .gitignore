@@ -1,0 +1,30 @@
+## .NET build and user files
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## VSCode and Rider settings 
+.vscode/
+.idea/
+
+## Playwright-related artifacts
+playwright-report/
+TestResults/
+*.log
+
+##.NET Playwright CLI
+bin/**/playwright.ps1
+bin/**/playwright.sh
+
+
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Environment files
+.env
+.env.*
