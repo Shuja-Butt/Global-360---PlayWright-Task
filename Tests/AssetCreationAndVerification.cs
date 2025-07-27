@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
+
 namespace PlaywrightTests;
 
 
-public class AssetCreationAndVerification 
+public class AssetCreationAndVerification :PageTest
 {
     private string _assetTag = "";
     private string _assetModel = "";
@@ -76,6 +77,15 @@ public class AssetCreationAndVerification
         // Validate asset is visible
         var assetLink = page.GetByRole(AriaRole.Link, new() { Name = $"{_assetTag}" });
         await Expect(assetLink).ToBeVisibleAsync();
+
+        await page.GetByRole(AriaRole.Link, new() { Name = _assetTag }).ClickAsync();
+
+
+        //Assert Status, tag and model
+        await Expect(page.Locator("#details")).ToContainTextAsync("Ready to Deploy");
+        await Expect(page.Locator("#details")).ToContainTextAsync(_assetTag);
+        await Expect(page.Locator("#details")).ToContainTextAsync("Macbook Pro 13\"");
+
 
         await context.CloseAsync();
     }
