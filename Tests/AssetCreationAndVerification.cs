@@ -10,38 +10,34 @@ namespace PlaywrightTests;
 public class AssetCreationAndVerification :PageTest
 {
     private string _assetTag = "";
-    private string _assetModel = "";
-    private string _assetStatus = "";
 
 
-
-    [Fact(DisplayName = "#1 Login and Save Auth State")]
-    public async Task LoginAndSaveAuthState()
+   override public async Task InitializeAsync()    
     {
-        var context = await Browser.NewContextAsync();
-        var page = await context.NewPageAsync();
 
-        await page.GotoAsync("https://demo.snipeitapp.com/login");
-        await page.GetByRole(AriaRole.Textbox, new() { Name = "Username" }).FillAsync("admin");
-        await page.GetByRole(AriaRole.Textbox, new() { Name = "Password" }).FillAsync("password");
-        await page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
+        await base.InitializeAsync();
+        var statePath = "../bin/Debug/net8.0/state.json";
 
-        await Expect(page).ToHaveURLAsync("https://demo.snipeitapp.com/");
-        await Expect(page.Locator("#success-notification")).ToContainTextAsync("Success");
+Console.WriteLine($"Checking state path: {statePath}");
+        if (false)
+        {
+             Console.WriteLine($"Checking state path: {statePath}");
 
-        // Save storage state
-        await context.StorageStateAsync(new() { Path = "./state.json" });
-        await context.CloseAsync();
+            using var playwright = await Microsoft.Playwright.Playwright.CreateAsync(); 
+
+            await Utils.LoginAndSaveState(playwright);
+        }
+
+   
+
     }
-
-
-
 
 
 
     [Fact(DisplayName = "#2 Asset Creation and Validation")]
     public async Task AssetCreationValidation()
     {
+
         var context = await Browser.NewContextAsync(new BrowserNewContextOptions
         {
             StorageStatePath = "./state.json"
