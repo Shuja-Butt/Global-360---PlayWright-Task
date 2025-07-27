@@ -16,13 +16,11 @@ public class AssetCreationAndVerification :PageTest
     {
 
         await base.InitializeAsync();
-        var statePath = "../bin/Debug/net8.0/state.json";
+        var statePath = "./state.json";
 
-Console.WriteLine($"Checking state path: {statePath}");
-        if (false)
+
+        if (!File.Exists(statePath))
         {
-             Console.WriteLine($"Checking state path: {statePath}");
-
             using var playwright = await Microsoft.Playwright.Playwright.CreateAsync(); 
 
             await Utils.LoginAndSaveState(playwright);
