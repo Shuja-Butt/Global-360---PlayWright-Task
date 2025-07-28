@@ -10,13 +10,14 @@ namespace PlaywrightTests;
 public class AssetCreationAndVerification :PageTest
 {
     private string _assetTag = "";
+    private string _assetLink = "";
 
 
    override public async Task InitializeAsync()    
     {
 
         await base.InitializeAsync();
-        var statePath = "./state.json";
+        var statePath = Utils.statePath;
 
 
         if (!File.Exists(statePath))
@@ -44,7 +45,7 @@ public class AssetCreationAndVerification :PageTest
         var page = await context.NewPageAsync();
 
         // Navigate and create asset
-        await page.GotoAsync("https://demo.snipeitapp.com");
+        await page.GotoAsync(Utils.baseURL);
 
         await page.GetByRole(AriaRole.Link, new() { Name = "Assets view all" }).ClickAsync();
         await page.GetByRole(AriaRole.Link, new() { Name = "Create New" }).ClickAsync();
@@ -75,10 +76,23 @@ public class AssetCreationAndVerification :PageTest
         await page.GetByRole(AriaRole.Link, new() { Name = _assetTag }).ClickAsync();
 
 
+       _assetLink = await page.GetByRole(AriaRole.Link, new() { Name = _assetTag }).GetAttributeAsync("href");
+
+
         //Assert Status, tag and model
         await Expect(page.Locator("#details")).ToContainTextAsync("Ready to Deploy");
         await Expect(page.Locator("#details")).ToContainTextAsync(_assetTag);
         await Expect(page.Locator("#details")).ToContainTextAsync("Macbook Pro 13\"");
+
+
+        //Validing that assetLink in History is same as orignal AssetLink
+
+        await page.GetByRole(AriaRole.Link, new() { Name = "History" }).ClickAsync();
+         await Expect(page.GetByRole(AriaRole.Link, new() { Name = _assetTag, Exact = false }))
+        .ToHaveAttributeAsync("href", _assetLink);
+
+
+
 
 
         await context.CloseAsync();
